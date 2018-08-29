@@ -9,6 +9,10 @@
   "author": "willpark",
   "license": "ISC",
   "dependencies": {
+    "bs58": "^4.0.1",
+    "bs58check": "^2.1.2",
+    "ora": "^3.0.0",
+    "qtumjs": "^1.9.1",
     "socket.io": "^2.1.1"
   }
 }
