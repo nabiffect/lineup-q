@@ -4,12 +4,12 @@ import "./Ownable.sol";
 import "./SafeMath.sol";
 
 contract Lineup is Ownable{
-
+  using SafeMath for uint;
   enum UserType {MALE, FEMALE, PANEL}
 
   struct UserInfo {
     bytes32 name;
-    UserType type;
+    UserType utype;
   }
 
   struct Bet {  	
@@ -17,58 +17,98 @@ contract Lineup is Ownable{
     address winner_woman;
   }
 
-  // struct Like {
-  //   address partner;    
-  //   uint numlikes;
-  // }
-
-
   mapping (address => UserInfo) public userinfos;
   mapping (address => uint256) public likes_forman;
   mapping (address => uint256) public likes_forwoman;
   
-  address[] users;
-  address[] panels;
+  address[] public users;
+  address[] public panels;
   mapping (address => Bet) public bets;
   mapping (address => uint256) public balanceOfUsers;
   uint public fundingGoal = 600;
   uint public amountRaised;
   bool public depositClosed = false;  
 
-  address[] winners;
-  address[] winpanels;
+  address[] public winners;
+  address[] public winpanels;
 
+  uint public gameStartTime;
+  uint public gameEndTime;
+  bool public isGameStart;
 
   //events
   event FundingGoalReached(uint amountRaisedValue);
   event GameStartEvent();
-  event BettedEvent();
+  event BettedComplete(address bettor, address man, address woman);
   event GameEndEvent();
   event DeterminedFinalList(address wm, address ww);
   event DistributionComplete();
   
-
   function() public { //falback
   	revert();
   }
 
-  function depositFunds() payable public {
+  function depositFunds(bytes32 name, bool isMale) payable public {
   	require(!depositClosed);
+    require(msg.value >= 300);
+ 
+    //register to userinfo
+    UserType utype = UserType.MALE;
+    if(!isMale){
+      utype = UserType.FEMALE;
+    }
+    userinfos[msg.sender] = UserInfo(name, utype);
+    users.push(msg.sender);
+
+
     uint amount = msg.value;
     balanceOfUsers[msg.sender] += amount;
     amountRaised += amount;
   }
 
+  function joinPanel() external {
+    require(!isGameStart);
+
+    panels.push(msg.sender);
+  }
+
   function checkFundsReady() external {
-  	if(amount >= fundingGoal){  	  
+  	if(amountRaised >= fundingGoal){  	  
   	  depositClosed = true;
-  	  FundingGoalReached(amountRaised);
+  	  emit FundingGoalReached(amountRaised);
+
+      gameStart();
   	}
   }
 
-  //TODO
-  //like action
-  //bet action
+  function gameStart() internal {
+    gameStartTime = now;
+    gameEndTime = gameStartTime + 10 minutes;
+    isGameStart = true;
+    emit GameStartEvent();
+  }
+  
+  function likeAtPartner(address _to) public {    
+    require(_to != address(0));
+    // require(_to != msg.sender);
+    
+    UserType utype = userinfos[msg.sender].utype;
+    if(utype == UserType.MALE) {
+      likes_forman[_to] += 1;
+    } else if(utype == UserType.FEMALE){
+      likes_forwoman[_to] += 1;
+    }
+  }
+  
+  function betMatch(address man, address woman) public {
+    require(man != address(0));
+    require(woman != address(0));
+    // require(man != woman);
+
+    bets[msg.sender] = Bet(man, woman);
+    emit BettedComplete(msg.sender, man, woman);
+  }
+
 
   function checkFinalList() external {
     uint num_like_man = 0;
@@ -79,14 +119,14 @@ contract Lineup is Ownable{
 
     for(uint i=0; i<users.length; i++) {
       address user_addr = users[i];
-      UserType type = userinfos[user_addr].type;      
-      if(type == UserType.MALE){
-        if(likes_forman[user_addr] && likes_forman[user_addr]>num_like_man){
+      UserType utype = userinfos[user_addr].utype;      
+      if(utype == UserType.MALE){
+        if(likes_forman[user_addr]>num_like_man){
           num_like_man = likes_forman[user_addr];
           winner_man = user_addr;
         }
-      } else if(type == UserType.FEMALE){
-        if(likes_forwoman[user_addr] && likes_forwoman[user_addr]>num_like_woman){
+      } else if(utype == UserType.FEMALE){
+        if(likes_forwoman[user_addr]>num_like_woman){
           num_like_woman = likes_forwoman[user_addr];
           winner_woman = user_addr;
         }
@@ -98,28 +138,33 @@ contract Lineup is Ownable{
 
     for(uint j=0; j<panels.length; j++) {
       address panel_addr = panels[j];
-      if(bets[panel_addr] && bets[panel_addr].winner_man==winner_man && bets[panel_addr].winner_woman==winner_woman){
+      if(bets[panel_addr].winner_man==winner_man && bets[panel_addr].winner_woman==winner_woman){
         winpanels.push(panel_addr);
       }
     }
 
-    DeterminedFinalList(winner_man, winner_woman);
+    emit DeterminedFinalList(winner_man, winner_woman);
   }
   
 
   function distribution() external{
-    if(winners.length==0) throw;
+    // require(now > gameEndTime);
+    if(winners.length==0) revert();
 
     for(uint j=0; j<winners.length; j++) {
-      winners[i].send(150);
+      winners[i].transfer(150);
     }
 
-    uint dividents = 300.div(winpanels.length);
-    for(uint i=0; i<winpanels.length; i++) {
-      winpanels[i].send(dividents);
-    }
+    //should be changed
+    if(winpanels.length>0){
+      uint amountForPanel = 300;
+      uint dividents = amountForPanel.div(winpanels.length);
+      for(uint i=0; i<winpanels.length; i++) {
+        winpanels[i].transfer(dividents);
+      }
+    }    
 
-    DistributionComplete();
+    emit DistributionComplete();
   }
 
 
