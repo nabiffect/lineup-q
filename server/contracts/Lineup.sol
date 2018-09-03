@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.17;
 
 import "./Ownable.sol";
 import "./SafeMath.sol";
@@ -35,6 +35,7 @@ contract Lineup is Ownable{
   uint public gameStartTime;
   uint public gameEndTime;
   bool public isGameStart;
+  bool public isGameEnd;
 
   //events
   event FundingGoalReached(uint amountRaisedValue);
@@ -133,6 +134,7 @@ contract Lineup is Ownable{
       }      
     }
 
+    require((winner_man != address(0))&&(winner_woman != address(0)));
     winners.push(winner_man);
     winners.push(winner_woman);
 
@@ -153,6 +155,7 @@ contract Lineup is Ownable{
 
     for(uint j=0; j<winners.length; j++) {
       winners[i].transfer(150);
+      amountRaised-=150;
     }
 
     //should be changed
@@ -161,15 +164,67 @@ contract Lineup is Ownable{
       uint dividents = amountForPanel.div(winpanels.length);
       for(uint i=0; i<winpanels.length; i++) {
         winpanels[i].transfer(dividents);
+        amountRaised-=dividents;
       }
-    }    
+    }
+
+    isGameEnd = true;
 
     emit DistributionComplete();
+  }  
+
+  function withdrawOwner() public onlyOwner {
+    msg.sender.transfer(amountRaised);
   }
 
+  function withdraw() external {
+    require(isGameEnd);
+    // require(now > gameEndTime);
+
+    uint balance = balanceOfUsers[msg.sender];
+    msg.sender.transfer(balance);
+    balanceOfUsers[msg.sender] = 0;
+  }
 
   function kill() public onlyOwner {
     selfdestruct(msg.sender);
   }
 
+
+  //getter functions
+  function getUserInfo(address addr) public view returns(bytes32, UserType) {
+    return (userinfos[addr].name, userinfos[addr].utype);
+  }
+
+  function getUsers() view public returns(address[] addrs) {
+    return users;
+  }
+
+  function getPanels() view public returns(address[] addrs){
+    return panels;
+  }
+
+  function getWinners() view public returns(address[] addrs){
+    return winners;
+  }  
+
+  function getWinpanels() view public returns(address[] addrs){
+    return winpanels;
+  }
+
+  function getLikesForman(address addr) view public returns(uint256 numlikes) {
+    return likes_forman[addr];
+  }
+
+  function getLikesForwoman(address addr) view public returns(uint256 numlikes) {
+    return likes_forwoman[addr];
+  }
+
+  function getBet(address addr) view public returns(address, address) {
+    return (bets[addr].winner_man, bets[addr].winner_woman);
+  }
+
+  function getBalanceOfUser(address addr) view public returns(uint256 balance){
+    return balanceOfUsers[addr];
+  }
 }
