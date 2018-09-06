@@ -4,6 +4,7 @@ module.exports = function(app, key) {
   const repoData = require("./contracts/solar.development.json")
   const Web3 = require('web3')
   const web3 = new Web3()
+  const roomId = 1;
 
   const qtum = new Qtum("http://qtum:test@localhost:4889", repoData)
 
@@ -101,7 +102,7 @@ module.exports = function(app, key) {
 
     const hexaddr = getHexAddres(address)
 
-    const result = await lineup.call("getBalanceOfUser", [hexaddr])
+    const result = await lineup.call("getBalanceOfUser", [roomId, hexaddr])
     console.log("getBalance", result.outputs[0].toNumber())
     res.json({
       'balance':result.outputs[0].toNumber()
@@ -116,31 +117,31 @@ module.exports = function(app, key) {
     const hexaddr = getHexAddres(address)
 
     let jobj = {}
-    let result = await lineup.call("amountRaised")
+    let result = await lineup.call("getAmountRaised", [roomId])
     jobj.amountRaised = result.outputs[0].toNumber()
 
     result = await lineup.call("getUserInfo", [hexaddr])
     jobj.getUserInfo = web3.utils.toAscii('0x'+result.outputs[0]) + "/" +result.outputs[1]
     
-  	result = await lineup.call("getUsers")
+  	result = await lineup.call("getUsers", [roomId])
   	jobj.getUsers = result.outputs[0]
 
-  	result = await lineup.call("getPanels")
+  	result = await lineup.call("getPanels", [roomId])
   	jobj.getPanels = result.outputs[0]
 
-  	result = await lineup.call("getWinners")
+  	result = await lineup.call("getWinners", [roomId])
   	jobj.getWinners = result.outputs[0]
 
-  	result = await lineup.call("getWinpanels")
+  	result = await lineup.call("getWinpanels", [roomId])
   	jobj.getWinpanels = result.outputs[0]
   	
-    result = await lineup.call("getLikesForman", [hexaddr])
+    result = await lineup.call("getLikesForman", [roomId, hexaddr])
     jobj.getLikesForman = result.outputs[0]
 
-  	result = await lineup.call("getLikesForwoman", [hexaddr])
+  	result = await lineup.call("getLikesForwoman", [roomId, hexaddr])
     jobj.getLikesForwoman = result.outputs[0]
 
-  	result = await lineup.call("getBet", [hexaddr])
+  	result = await lineup.call("getBet", [roomId, hexaddr])
     jobj.getBet = result.outputs[0] +"/"+result.outputs[1]
 
     res.json(jobj)
