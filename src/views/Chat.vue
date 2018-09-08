@@ -1,94 +1,75 @@
 <template>
-	<div class="card mt-3">
-		<div>
-        <div>
-            <h3>Chat Group</h3>
-            <hr>
-        </div>
-        <div>
-          <ul class="messages " v-chat-scroll>
-            <li class="message" v-for="(msg, index) in messages" :key="index">
-              <p><span>{{msg.user}}: </span>{{msg.message}}</p>
-            </li>
-          </ul> 
-        </div>
-    </div>
-    <div>
-    	<b-container>      	        	  
-        <b-form @submit.prevent="sendMessage">
-        	<b-row>
-        	<b-col>
-            <b-form-input id="ipUser" placeholder="User" v-model="user" class="form-control" required></b-form-input>
-          </b-col>
-          <b-col>
-            <b-form-input id="ipMsg" type="text" placeholder="Msg" v-model="message" class="form-control" ></b-form-input>
-          </b-col>
-          <b-col><b-button type="submit" variant="primary" class="btn">Send</b-button></b-col>
-          </b-row>
-        </b-form>
-      </b-container>
-    </div>
-	</div>
+	<b-container>
+    <b-row>
+      <b-col cols="4"><ProfileCard /></b-col>
+      <b-col cols="8">
+        <template v-if="!isJoin">
+          <Rooms v-on:joinroom="onChangeChatRoom" />
+        </template>
+        <template v-else>
+          <ChatComp v-on:showcmodal="_showChooseModal" v-on:showbmodal="_showBetModal" />  
+        </template>
+
+        <b-modal ref="modalCP" @ok="handleChoosePartner()">
+          <b-card>Choose Partner</b-card>
+        </b-modal>
+
+        <b-modal ref="modalBP" @ok="handleBetPartner()">
+          <b-card>Choose Bet</b-card>
+        </b-modal>
+      </b-col>
+    </b-row>
+	</b-container>
 </template>
 
 <script>
-import io from 'socket.io-client';
+import ProfileCard from '@/components/ProfileCard';
+import Rooms from '@/components/Rooms';
+import ChatComp from '@/components/ChatComp';
 
 export default {
+  name: 'chat',
+  components: {
+    ProfileCard,
+    ChatComp,
+    Rooms
+  },
   data() {
     return {
-	  user: '',
-	  message: '',
-	  messages: [
-      {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-      {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-      {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-      {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-      {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-    ],
-	  socket: io('localhost:3000')
+	    isJoin: true
     }
   },
 
   mounted() {
-  	this.socket.on('MESSAGE', (data) => {
-  	  this.messages = [...this.messages, data];
-  	});
+  	
   },
 
   methods: {
-  	sendMessage(e) {
-  	  e.preventDefault();
+  	onChangeChatRoom() {
+      console.log("test");
+      this.isJoin = true;
+    },
 
-  	  this.socket.emit('SEND_MESSAGE', {
-  	  	user: this.user,
-  	  	message: this.message
-  	  });
-  	  this.message = '';
-  	}
+    _showChooseModal() {
+      this.$refs.modalCP.show();
+    },
+
+    _showBetModal() {
+      this.$refs.modalBP.show();
+    },
+
+    handleChoosePartner() {
+
+    },
+
+    handleBetPartner() {
+
+    }
   }
 }
 </script>
 
 <style scoped>
-.card {
-  height: 600px;
-}
 
-.messages {
-  height: 400px;  
-  border: 1px solid black;
-  padding: 10px 20px 5px 10px;
-  overflow-y: auto;  
-}
-
-li {
-  background-color: #ffffff;
-  border: 1px solid black;
-  list-style: none;
-  padding: .75rem;
-  margin: 10px 0 10px 0;
-  text-align: left;
-}
 
 </style>
