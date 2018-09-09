@@ -1,7 +1,10 @@
 <template>
 	<b-container>
     <b-row>
-      <b-col cols="4"><ProfileCard /></b-col>
+      <b-col cols="4">
+        <ProfileCard />
+        <ParticipantsList />
+      </b-col>
       <b-col cols="8">
         <template v-if="startTime">
           <CountDown v-bind:end="startTime" />
@@ -32,6 +35,8 @@
 
 <script>
 import ProfileCard from '@/components/ProfileCard';
+import ParticipantsList from '@/components/ParticipantsList';
+
 import Rooms from '@/components/Rooms';
 import ChatComp from '@/components/ChatComp';
 import ChoosePartnerComp from '@/components/ChoosePartnerComp';
@@ -46,6 +51,7 @@ export default {
   name: 'chat',
   components: {
     ProfileCard,
+    ParticipantsList,
     ChatComp,
     Rooms,
     ChoosePartnerComp,
