@@ -15,6 +15,7 @@ Vue.use(VueChatScroll)
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
+Vue.prototype.$EventBus = new Vue();
 
 new Vue({
   router,

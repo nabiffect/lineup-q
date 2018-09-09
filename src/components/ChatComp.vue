@@ -32,6 +32,7 @@
     <div>
       <b-button @click="showChooseModal">Show Choose Partner</b-button>
       <b-button @click="showBetModal">Show Bet Partners</b-button>
+      <b-button @click="showFinalModal">Show Final List</b-button>
     </div>
 	</div>
 </template>
@@ -80,6 +81,10 @@ export default {
 
     showBetModal() {
       this.$emit("showbmodal")
+    },
+
+    showFinalModal() {
+      this.$emit("showfmodal")
     }
   }
 }

@@ -128,7 +128,7 @@ export default {
 
   	_betMatch: function() {
   	  this.axios
-  	    .post('/lineup/betMatch', qs.stringify({'address': this.account}))
+  	    .post('/lineup/betMatch', qs.stringify({'fromAddr': this.account, 'toAddr': this.account}))
   	    .then(response => {
   	    	this.resultinfo = response.data.result
           this._getInfo()

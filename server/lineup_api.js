@@ -66,11 +66,13 @@ module.exports = function(app, key) {
   });
 
   app.post('/api/lineup/betMatch', async(req, res) => {
-    const address = req.body.address
-    if(!address) return;
+    const fromAddr = req.body.fromAddr
+    const toAddr = req.body.toAddr
+    if(!fromAddr || !toAddr) return;
 
-    const hexaddr = getHexAddres(address)
-    const tx = await lineup.send("betMatch", [hexaddr, hexaddr])
+    const hexaddrF = getHexAddres(fromAddr)
+    const hexaddrT = getHexAddres(toAddr)
+    const tx = await lineup.send("betMatch", [hexaddrF, hexaddrT])
     const result = await tx.confirm(1)
     console.log(result)
     res.json({
