@@ -3,6 +3,10 @@
     <b-row>
       <b-col cols="4"><ProfileCard /></b-col>
       <b-col cols="8">
+        <template v-if="startTime">
+          <CountDown v-bind:end="startTime" />
+        </template>
+
         <template v-if="!isJoin">
           <Rooms v-on:joinroom="onChangeChatRoom" />
         </template>
@@ -34,6 +38,8 @@ import ChoosePartnerComp from '@/components/ChoosePartnerComp';
 import ChooseBetComp from '@/components/ChooseBetComp';
 import FinalList from '@/components/FinalList';
 
+import CountDown from '@/components/CountDown';
+
 import qs from 'qs';
 
 export default {
@@ -44,14 +50,16 @@ export default {
     Rooms,
     ChoosePartnerComp,
     ChooseBetComp,
-    FinalList
+    FinalList,
+    CountDown
   },
   data() {
     return {
 	    isJoin: true,
       selProfile: null,
       selBetProfile1: null,
-      selBetProfile2: null
+      selBetProfile2: null,
+      startTime: null
     }
   },
 
@@ -59,12 +67,22 @@ export default {
   	this.$EventBus.$on('selectPartner', this._selectPartner);
     this.$EventBus.$on('betPartner1', this._betPartner1);
     this.$EventBus.$on('betPartner2', this._betPartner2);
+
+    const date = new Date();
+      date.setMinutes(date.getMinutes() + 10);
+      console.log(date)
+      this.startTime = date.toString();
   },
 
   methods: {
   	onChangeChatRoom() {
       console.log("test");
       this.isJoin = true;
+
+      // const date = new Date();
+      // date.setMinutes(date.getMinutes() + 10);
+      // console.log(date)
+      // this.startTime = date.toString();
     },
 
     _showChooseModal() {

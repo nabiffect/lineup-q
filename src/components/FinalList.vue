@@ -4,9 +4,8 @@
     <h2>Final List</h2>
     
     <b-card-group class="bcg">
-      <b-card class="cardG" v-for="profile in _orderProfiles(profiles)" :key="profile.idx"  v-bind:title="profile.name"
-        v-bind:img-src="profile.img"
-        v-on:click="onCardClick(profile)"
+      <b-card class="cardG" v-for="profile in orderProfiles" :key="profile.idx"  v-bind:title="profile.name"
+        v-bind:img-src="profile.img"        
         img-alt="Img"
         img-top>        
         <p class="card-text">
@@ -22,9 +21,8 @@
     </b-card-group>
 
     <b-card-group class="bcg">
-      <b-card class="cardG" v-for="profile in _orderProfiles(profiles2)" :key="profile.idx"  v-bind:title="profile.name"
-        v-bind:img-src="profile.img"
-        v-on:click="onCardClick2(profile)"
+      <b-card class="cardG" v-for="profile in orderProfiles2" :key="profile.idx"  v-bind:title="profile.name"
+        v-bind:img-src="profile.img"        
         img-alt="Img"
         img-top>        
         <p class="card-text">
@@ -128,18 +126,26 @@ export default {
       matchName2: null
     }
   },
+  computed: {
+    orderProfiles() {
+      return this.profiles.sort(function(a,b) {
+        return (a.cntFavorite - b.cntFavorite < 0);
+      });
+    },
+
+    orderProfiles2() {
+      return this.profiles2.sort(function(a,b) {
+        return (a.cntFavorite - b.cntFavorite < 0);
+      });
+    }
+  },
 
   mounted() {
     this.matchName1 = "파랑이";
     this.matchName2 = "차돌남";
   },
 
-  methods: {
-    _orderProfiles(profiles) {
-      return profiles.sort(function(a,b) {
-        return (a.cntFavorite - b.cntFavorite < 0);
-      });
-    }
+  methods: {    
 
   	
   }
