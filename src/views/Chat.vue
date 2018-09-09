@@ -1,36 +1,39 @@
-<template>
-	<b-container>
-    <b-row>
-      <b-col cols="4">
-        <ProfileCard />
-        <ParticipantsList />
-      </b-col>
-      <b-col cols="8">
-        <template v-if="startTime">
-          <CountDown v-bind:end="startTime" />
-        </template>
+<template>  
+  <div>
+    <img class="logo" :src="getLogo">
+  	<b-container>       
+      <b-row>
+        <b-col cols="4">
+          <ProfileCard />
+          <ParticipantsList />
+        </b-col>
+        <b-col cols="8">
+          <template v-if="startTime">
+            <CountDown v-bind:end="startTime" />
+          </template>
 
-        <template v-if="!isJoin">
-          <Rooms v-on:joinroom="onChangeChatRoom" />
-        </template>
-        <template v-else>
-          <ChatComp v-on:showcmodal="_showChooseModal" v-on:showbmodal="_showBetModal" v-on:showfmodal="_showFinalModal" />  
-        </template>
+          <template v-if="!isJoin">
+            <Rooms v-on:joinroom="onChangeChatRoom" />
+          </template>
+          <template v-else>
+            <ChatComp v-on:showcmodal="_showChooseModal" v-on:showbmodal="_showBetModal" v-on:showfmodal="_showFinalModal" />  
+          </template>
 
-        <b-modal ref="modalCP" @ok="handleChoosePartner()">
-          <ChoosePartnerComp />
-        </b-modal>
+          <b-modal ref="modalCP" @ok="handleChoosePartner()">
+            <ChoosePartnerComp />
+          </b-modal>
 
-        <b-modal ref="modalBP" @ok="handleBetPartner()">
-          <ChooseBetComp />
-        </b-modal>
+          <b-modal ref="modalBP" @ok="handleBetPartner()">
+            <ChooseBetComp />
+          </b-modal>
 
-        <b-modal ref="modalFP" @ok="handleFinalClose()">
-          <FinalList />
-        </b-modal>
-      </b-col>
-    </b-row>
-	</b-container>
+          <b-modal ref="modalFP" @ok="handleFinalClose()">
+            <FinalList />
+          </b-modal>
+        </b-col>
+      </b-row>
+  	</b-container>
+  </div>
 </template>
 
 <script>
@@ -60,12 +63,17 @@ export default {
     CountDown
   },
   data() {
-    return {
+    return {      
 	    isJoin: true,
       selProfile: null,
       selBetProfile1: null,
       selBetProfile2: null,
       startTime: null
+    }
+  },
+  computed: {
+    getLogo() {
+      return require('@/assets/logo.png')
     }
   },
 
@@ -164,5 +172,8 @@ export default {
 
 <style scoped>
 
-
+  .logo {
+    text-align: left;
+    width: 110px;
+  }
 </style>

@@ -7,7 +7,7 @@
       <b-list-group-item class="profile d-flex justify-content-between align-items-center" v-for="profile in profiles" :key="profile.idx">        
           <img :src="profile.img" />        
           <div class="detail">
-            <p class="name">{{profile.name}}</p>
+            <p class="name">{{profile.name}} <img class="imgGender" :src="getFemaleUrl" /></p>
             <p class="desc">{{profile.desc}}</p>        
           </div>                              
       </b-list-group-item>
@@ -15,7 +15,7 @@
       <b-list-group-item class="profile d-flex justify-content-between align-items-center" v-for="profile in profiles2" :key="profile.idx">        
           <img :src="profile.img" />        
           <div class="detail">
-            <p class="name">{{profile.name}}</p>
+            <p class="name">{{profile.name}} <img class="imgGender" :src="getMaleUrl" /></p>
             <p class="desc">{{profile.desc}}</p>        
           </div>                  
       </b-list-group-item>
@@ -107,6 +107,16 @@ export default {
         },
       ]    
     }
+  },
+
+  computed: {
+    getMaleUrl: function() {      
+      return require('@/assets/male_imae.png');      
+    },
+
+    getFemaleUrl: function() {      
+      return require('@/assets/female_imae.png');      
+    }
   },  
 
   mounted() {
@@ -133,9 +143,7 @@ export default {
     padding: 0 0 0 15px;
     max-width: 280px;
     background: #f8f8f8;
-    color: #989898;
-
-    cursor: pointer;
+    color: #989898; 
   }
 
   .profile img {
@@ -145,6 +153,11 @@ export default {
 
   .profile .detail {
     width: 150px;
+  }
+
+  .profile .detail .imgGender {
+    width: 17px;
+    height: 17px;
   }
 
   .profile .name {
