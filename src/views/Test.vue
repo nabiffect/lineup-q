@@ -76,7 +76,7 @@ export default {
 
   	_depositFunds: function() {
   	  this.axios
-  	    .post('/lineup/depositFunds', qs.stringify({'uname': 'tester', 'amount': 100}))
+  	    .post('/lineup/depositFunds', qs.stringify({'uname': 'tester', 'gender': 'm', 'amount': 100}))
   	    .then(response => {
   	    	this.resultinfo = response.data.result
           this._getInfo()

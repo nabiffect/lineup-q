@@ -1,15 +1,19 @@
 <template>
   <div>
   	<b-card class="cardG">
-  	  <div class="profile-info">
+  	  <div class="profile-info"> 
+        <p class="uimg">
+          <b-img left rounded="circle" width="75" height="75" src="https://i.imgur.com/hiSJELS.png" />
+        </p>
+
   	  	<p class="text-center uname">
-  	  	  Name : {{uname}}  <img :src="getGenderUrl" />
+  	  	  {{userinfo.uname}}  <img :src="getGenderUrl" />
   	  	</p>  	  	
   	  	<p class="text-center address">
-  	  	  Address : {{account}}
+  	  	   {{userinfo.account}} <span class="reftxt">(Address)</span>
   	  	</p>
   	  	<p class="text-center balance">
-  	  	  Balance : {{balance}}
+  	  	   {{_getFormattedBalance}} <span class="reftxt">(Balance)</span>
   	  	</p>
   	  </div>
   	</b-card>
@@ -22,45 +26,60 @@
   export default {
     name: 'ProfileCard',
 
+    props: ['userinfo'],
     data() {
       return {
-        uname: 'WillPark',
-        gender: 'male',
-        // genderUrl: '../assets/male_imae.png',
-        account: 'qfUCuSnFqFygtraZcrrcwd633oY16tWEDq',
-        balance: null,
+        // uname: 'WillPark',
+        // gender: 'male',        
+        // account: 'qfUCuSnFqFygtraZcrrcwd633oY16tWEDq',
+        // balance: null,
         errored: false,
       }      
     },
     computed: {
       getGenderUrl: function() {
-      	if(this.gender=='male'){
+      	if(this.userinfo.gender=='m'){
       	  return require('@/assets/male_imae.png');
       	} else {
       	  return require('@/assets/female_imae.png');
       	}      	
+      },
+
+      _getFormattedBalance() {
+        if(this.userinfo.balance){          
+          const strBalance  = this.userinfo.balance.toString();
+          const lidx = strBalance.length-8
+          return strBalance.slice(0, lidx);
+        }
       }
     },
 
     mounted() {
-      this.axios
-        .post('/lineup/balanceOf', qs.stringify({'address': this.account}))
-        .then(response => {
-          this.balance = response.data.balance;
-        })
-        .catch(error => {
-          console.log(error)        
-          this.errored = true;
-        })
+      
     }   
   }
 </script>
 <style scoped>
   .cardG {
     max-width: 600px;
-  } 
+    height: 190px;
+  }   
 
   .profile-info {
+    font-size: 14px;
+  }  
 
+  .profile-info .uname {
+    font-weight: 800;
+  }  
+
+  .profile-info .reftxt{
+    font-size: 11px;
+    font-weight: 400;
+  }
+
+  .profile-info .balance {
+    font-size: 16px;
+    font-weight: 700;
   }
 </style>

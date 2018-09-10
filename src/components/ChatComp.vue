@@ -146,7 +146,7 @@ export default {
 }
 
 #ipMsg {
-  width: 500px;
+  width: 450px;
 }
 
 </style>

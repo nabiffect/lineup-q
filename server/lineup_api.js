@@ -19,11 +19,17 @@ module.exports = function(app, key) {
 
   app.post('/api/lineup/depositFunds', async (req, res) => {  
     const uname = req.body.uname;
+    const gender = req.body.gender; // m or f
+    let isMale = true;
+    if(gender == 'f') {
+      isMale = false;
+    }
+
     const amount = req.body.amount; // 100
     if(!uname || amount < 100) return;
 
     const hexName = web3.utils.fromAscii(uname)
-    const tx = await lineup.send("depositFunds", [hexName, true], {
+    const tx = await lineup.send("depositFunds", [hexName, isMale], {
       amount
     })
     const result = await tx.confirm(1)

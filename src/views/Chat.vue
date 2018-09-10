@@ -1,10 +1,10 @@
 <template>  
-  <div>
-    <img class="logo" :src="getLogo">
+  <div>    
   	<b-container>       
       <b-row>
-        <b-col cols="4">
-          <ProfileCard />
+        <b-col cols="4" style="background: #f1f7f2">
+          <img class="logo" :src="getLogo">
+          <ProfileCard v-bind:userinfo="userinfo" />
           <ParticipantsList />
         </b-col>
         <b-col cols="8">
@@ -33,6 +33,10 @@
         </b-col>
       </b-row>
   	</b-container>
+
+    <template v-if="loading">
+      <rotate-square2 id="spinner"></rotate-square2>
+    </template>
   </div>
 </template>
 
@@ -46,7 +50,8 @@ import ChoosePartnerComp from '@/components/ChoosePartnerComp';
 import ChooseBetComp from '@/components/ChooseBetComp';
 import FinalList from '@/components/FinalList';
 
-import CountDown from '@/components/CountDown';
+import CountDown from '@/components/CountDown'; 
+import {RotateSquare2} from 'vue-loading-spinner';
 
 import qs from 'qs';
 
@@ -60,15 +65,23 @@ export default {
     ChoosePartnerComp,
     ChooseBetComp,
     FinalList,
-    CountDown
+    CountDown,
+    RotateSquare2
   },
   data() {
     return {      
+      loading: false,
 	    isJoin: true,
       selProfile: null,
       selBetProfile1: null,
       selBetProfile2: null,
-      startTime: null
+      startTime: null,
+      userinfo: {
+        uname: 'Will',
+        gender: 'm',
+        account: 'qfUCuSnFqFygtraZcrrcwd633oY16tWEDq',
+        balance: null
+      }
     }
   },
   computed: {
@@ -82,21 +95,53 @@ export default {
     this.$EventBus.$on('betPartner1', this._betPartner1);
     this.$EventBus.$on('betPartner2', this._betPartner2);
 
-    const date = new Date();
-      date.setMinutes(date.getMinutes() + 10);
-      console.log(date)
-      this.startTime = date.toString();
+    this._getBalance();
+
+    ///temp
+    // const date = new Date();
+    // date.setMinutes(date.getMinutes() + 10);
+    // console.log(date)
+    // this.startTime = date.toString();
   },
 
   methods: {
+    _getBalance() {
+      this.axios
+        .post('/lineup/balanceOf', qs.stringify({'address': this.userinfo.account}))
+        .then(response => {
+          this.userinfo.balance = response.data.balance;
+        })
+        .catch(error => {
+          console.log(error)                  
+        })
+    },
+
   	onChangeChatRoom() {
-      console.log("test");
+      console.log("changeChatroom");
       this.isJoin = true;
 
-      // const date = new Date();
-      // date.setMinutes(date.getMinutes() + 10);
-      // console.log(date)
-      // this.startTime = date.toString();
+      const date = new Date();
+      date.setMinutes(date.getMinutes() + 10);
+      console.log(date)
+      this.startTime = date.toString();
+      
+      this._depositFunds(this.userinfo.uname, this.userinfo.gender)
+    },
+
+    _depositFunds: function(address, gender) {
+      this.loading = true;
+
+      console.log("_depositFunds::")
+      this.axios
+        .post('/lineup/depositFunds', qs.stringify({'uname': address, 'gender': gender, 'amount': 100}))
+        .then(response => {
+          console.log("result", response.data.result);
+          this._getBalance();          
+        }).catch(error => {
+          console.log(error)          
+        }).finally(() => {
+          this.loading = false;
+        })
     },
 
     _showChooseModal() {
@@ -126,6 +171,7 @@ export default {
         console.error("no address found")
         return;
       } 
+      this.loading = true;
 
       this.axios
         .post('/lineup/likeAtPartner', qs.stringify({'address': address}))
@@ -134,7 +180,9 @@ export default {
         })
         .catch(error => {
           console.log(error)          
-        });
+        }).finally(() => {
+          this.loading = false;
+        })
     },
 
     _betPartner1(profile) {
@@ -152,6 +200,8 @@ export default {
     },
 
     _betMatch(fromAddr, toAddr) {
+      this.loading = true;
+
       this.axios
         .post('/lineup/betMatch', qs.stringify({'fromAddr': fromAddr, 'toAddr': toAddr}))
         .then(response => {
@@ -159,13 +209,42 @@ export default {
         })
         .catch(error => {
           console.log(error)                  
-        })  
+        }).finally(() => {
+          this.loading = false;
+        })
     },
 
+    _checkFinalList: function() {     
+      this.axios
+        .post('/lineup/checkFinalList')
+        .then(response => {
+          console.log("result", response.data.result)         
+        })
+        .catch(error => {
+          console.log(error)                  
+        }).finally(() => {
+          this.loading = false;
+        })
+    },    
 
     handleFinalClose() {
+      // _distribution()
+    },
 
+    _distribution: function() {     
+      this.axios
+        .post('/lineup/distribution')
+        .then(response => {
+          console.log("result", response.data.result)
+          this._getBalance();          
+        })
+        .catch(error => {
+          console.log(error)                  
+        }).finally(() => {
+          this.loading = false;
+        })
     }
+
   }
 }
 </script>
@@ -174,6 +253,12 @@ export default {
 
   .logo {
     text-align: left;
-    width: 110px;
+    width: 130px;
+  }
+
+  #spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
   }
 </style>
