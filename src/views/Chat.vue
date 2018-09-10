@@ -8,15 +8,20 @@
           <ParticipantsList />
         </b-col>
         <b-col cols="8">
-          <template v-if="startTime">
-            <CountDown v-bind:end="startTime" />
+          <template v-if="endTime">
+            <CountDown v-bind:end="endTime" />
           </template>
 
-          <template v-if="!isJoin">
-            <Rooms v-on:joinroom="onChangeChatRoom" />
+          <template v-if="!isFinished">
+            <template v-if="!isJoin">
+              <Rooms v-on:joinroom="onChangeChatRoom" />
+            </template>
+            <template v-else>
+              <ChatComp v-on:showcmodal="_showChooseModal" v-on:showbmodal="_showBetModal" v-on:showfmodal="_showFinalModal" />  
+            </template>
           </template>
           <template v-else>
-            <ChatComp v-on:showcmodal="_showChooseModal" v-on:showbmodal="_showBetModal" v-on:showfmodal="_showFinalModal" />  
+            <h2>Please Wait...</h2>
           </template>
 
           <b-modal ref="modalCP" @ok="handleChoosePartner()">
@@ -36,6 +41,10 @@
 
     <template v-if="loading">
       <rotate-square2 id="spinner"></rotate-square2>
+    </template>
+
+    <template v-if="confirmed">
+      <b-alert id="alertConfirm" variant="success" dismissible show>Success!!</b-alert>
     </template>
   </div>
 </template>
@@ -70,12 +79,14 @@ export default {
   },
   data() {
     return {      
+      isFinished: false,
       loading: false,
+      confirmed: false,
 	    isJoin: true,
       selProfile: null,
       selBetProfile1: null,
       selBetProfile2: null,
-      startTime: null,
+      endTime: null,
       userinfo: {
         uname: 'Will',
         gender: 'm',
@@ -101,7 +112,7 @@ export default {
     // const date = new Date();
     // date.setMinutes(date.getMinutes() + 10);
     // console.log(date)
-    // this.startTime = date.toString();
+    // this.endTime = date.toString();
   },
 
   methods: {
@@ -123,7 +134,7 @@ export default {
       const date = new Date();
       date.setMinutes(date.getMinutes() + 10);
       console.log(date)
-      this.startTime = date.toString();
+      this.endTime = date.toString();
       
       this._depositFunds(this.userinfo.uname, this.userinfo.gender)
     },
@@ -142,6 +153,12 @@ export default {
         }).finally(() => {
           this.loading = false;
         })
+    },
+
+    _changeFinishPage() {
+      this.isFinished = true
+
+      this._showChooseModal();
     },
 
     _showChooseModal() {
@@ -163,7 +180,7 @@ export default {
     handleChoosePartner() {
       console.log(this.selProfile);
 
-      // this._likeAtPartner(this.selProfile.address)
+      this._likeAtPartner(this.selProfile.address)
     },
 
     _likeAtPartner(address) {
@@ -177,6 +194,7 @@ export default {
         .post('/lineup/likeAtPartner', qs.stringify({'address': address}))
         .then(response => {
           console.log("result", response.data.result);
+          this.confirmed = true;
         })
         .catch(error => {
           console.log(error)          
@@ -206,6 +224,7 @@ export default {
         .post('/lineup/betMatch', qs.stringify({'fromAddr': fromAddr, 'toAddr': toAddr}))
         .then(response => {
           console.log("result", response.data.result)
+          this.confirmed = true;
         })
         .catch(error => {
           console.log(error)                  
@@ -218,7 +237,8 @@ export default {
       this.axios
         .post('/lineup/checkFinalList')
         .then(response => {
-          console.log("result", response.data.result)         
+          console.log("result", response.data.result)
+          this._showFinalModal()
         })
         .catch(error => {
           console.log(error)                  
@@ -228,7 +248,7 @@ export default {
     },    
 
     handleFinalClose() {
-      // _distribution()
+      // this._distribution()
     },
 
     _distribution: function() {     
@@ -260,5 +280,11 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%;
+  }
+
+  #alertConfirm {
+    position: absolute;
+    top: 50%;
+    left: 50%; 
   }
 </style>

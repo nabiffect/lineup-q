@@ -26,7 +26,7 @@
           <b-col>
             <b-form-input id="ipMsg" type="text" placeholder="Msg" v-model="message" class="form-control" ></b-form-input>
           </b-col>
-          <b-col><b-button type="submit" variant="primary" class="btn">Send</b-button></b-col>
+          <b-col><b-button type="submit"class="btn">Send</b-button></b-col>
           </b-row>
         </b-form>
       </b-container>
@@ -98,12 +98,19 @@ export default {
 </script>
 
 <style scoped>
+.btn {
+  background-color: #235a06;
+  border-color: #235a06;
+}
+
 .card {
   height: 600px;
 }
 
-.header {
-  margin: 10px;
+.header {  
+  background: #235a06;    
+  color: #fff;
+  padding-top: 10px;
 }
 
 .messages {

@@ -25,7 +25,7 @@
       <h2>Panels</h2>
 
       <b-list-group >
-        <b-list-group-item class="panelItem" v-for="panel in panels">
+        <b-list-group-item class="panelItem" v-for="panel in panels" :key="panel.address">
           {{panel.address}}
         </b-list-group-item>
       </b-list-group>
@@ -104,12 +104,16 @@ export default {
 
   .panels {
     margin: 0 auto;
-    margin-bottom: 30px;
+    margin-bottom: 30px;    
     max-width: 280px;
   }  
 
   .panels .panelItem {
     background: #f8f8f8;
     color: #464646;  
+    width: 280px;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

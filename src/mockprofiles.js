@@ -2,26 +2,26 @@ export default function() {
 	return {
 		profiles: [
           {
-            address: '0x1233123asdasdf',
-            name: '앨리스',
+            address: 'qM8HbLgc8hXGvyxtYnMJo8ecHYk6gTrfL7',
+            name: 'Alice',
             img: 'https://i.imgur.com/H8mERhD.png',
-            desc: '크립토를 사랑하는 앨리스에요',
+            desc: 'Alice, who loves qtum',
             uptodate: 'Last updated 3 mins ago',
             cntFavorite: 1
           },
           {
-            address: '0x2233123asdasdf',
-            name: '파랑이',
+            address: 'qV4hA8HH41YRFNZKxXFx7Y4G56deiNfbJA',
+            name: 'Blue',
             img: 'https://i.imgur.com/Z4GLMZn.png',
-            desc: '파랑~파랑이에옄ㅋㅋ',
+            desc: 'Love blue sky. lol',
             uptodate: 'Last updated 3 hours ago',
             cntFavorite: 2
           },
           {
-            address: '0x3233123asdasdf',
-            name: '민낯요정',
+            address: 'qTH6vEyVhjm1g6Jdt4Dqs4RQ4C1sGbum54',
+            name: 'NoMakeUp',
             img: 'https://i.imgur.com/lUMpSZe.png',
-            desc: '좋은 인연되었으면 해요~',
+            desc: 'Hope it a good connection:)',
             uptodate: 'Last updated 1 day ago',
             cntFavorite: 0
           }
@@ -31,41 +31,46 @@ export default function() {
           {
             idx: 0,
             address: 'qfUCuSnFqFygtraZcrrcwd633oY16tWEDq',
-            name: '공유',
+            name: 'Will',
             img: 'https://i.imgur.com/hiSJELS.png',
-            desc: '제 마음을 공유해드릴게요',
+            desc: 'I\'ll share my feelings',
             uptodate: 'Last updated 3 mins ago',
-            cntFavorite: 0
+            cntFavorite: 2
           },
           {
             idx: 1,
-            address: 'qfUCuSnFqFygtraZcrrcwd633oY16tWEDq',
-            name: '바람의아들',
+            address: 'qdgRkdKTDqKEHuY6af48SoVdXtMq5jarYL',
+            name: 'SonOfWinds',
             img: 'https://i.imgur.com/0Usai0K.png',
-            desc: '바람아 불어라~',
+            desc: 'Blow~~',
             uptodate: 'Last updated 3 hours ago',
-            cntFavorite: 1
+            cntFavorite: 0
           },
           {
             idx: 2,
-            address: 'qfUCuSnFqFygtraZcrrcwd633oY16tWEDq',
-            name: '차돌남',
+            address: 'qeHbKPRP1JGcnAvx3djym6NTXixtcG6r3e',
+            name: 'ChadolNam',
             img: 'https://i.imgur.com/4B2mNYz.png',
-            desc: '차돌박이 좋아하는 남자',
+            desc: 'A man who like chadolbaki',
             uptodate: 'Last updated 1 day ago',
-            cntFavorite: 2
+            cntFavorite: 1
           }
         ],
       panels: [
         {
-          address: 'abcdfdfdfdf'
+          address: 'qaGEfv5yt7iRThCkuFFF4W616YVABDeK47'
         },
         {
-          address: 'abcdfdfdfd223'
+          address: 'qKuQQZCXeXBUoWAmh8sUgxpqfQ3VvDNe2Y'
         },
         {
-          address: 'abcdf2343223'
+          address: 'qVgJvyjS9CD8WiBt3iuQ3v8bvB2PpkJyPh'
         },
+      ],
+      hitpanels: [
+        {
+          address: 'qaGEfv5yt7iRThCkuFFF4W616YVABDeK47'
+        }
       ]    
 	}
 }

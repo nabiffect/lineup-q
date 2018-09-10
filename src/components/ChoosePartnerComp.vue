@@ -4,7 +4,7 @@
     <h2>Choose Partner</h2>
       
     <b-card-group class="bcg">
-      <b-card class="cardG" v-for="profile in profiles2" :key="profile.idx"  v-bind:title="profile.name"
+      <b-card class="cardG" v-for="profile in profiles" :key="profile.idx"  v-bind:title="profile.name"
         v-bind:img-src="profile.img"
         v-on:click="onCardClick(profile)"
         img-alt="Img"
@@ -27,7 +27,7 @@ export default {
   
   data() {
     return {
-      profiles2: profiles().profiles2,
+      profiles: profiles().profiles,
       
       selName: null
     }

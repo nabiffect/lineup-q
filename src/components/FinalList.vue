@@ -41,7 +41,7 @@
       <h2>Hit panels</h2>
 
       <b-list-group>
-        <b-list-group-item v-for="panel in panels">
+        <b-list-group-item v-for="panel in panels" :key="panel.address">
           {{panel.address}}
         </b-list-group-item>
       </b-list-group>
@@ -58,7 +58,7 @@ export default {
     return {
       profiles: profiles().profiles,
       profiles2: profiles().profiles2,
-      panels: profiles().panels,
+      panels: profiles().hitpanels,
       matchName1: null,
       matchName2: null
     }
@@ -78,8 +78,8 @@ export default {
   },
 
   mounted() {
-    this.matchName1 = "파랑이";
-    this.matchName2 = "차돌남";    
+    this.matchName1 = "Blue";
+    this.matchName2 = "Will";    
   },
 
   methods: {    
