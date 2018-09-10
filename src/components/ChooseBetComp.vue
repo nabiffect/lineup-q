@@ -13,7 +13,7 @@
           <b-badge variant="success">Selected</b-badge>
         </template>
         <div slot="footer">
-          <small class="text-muted">{{profile.uptodate}}</small>
+          <small class="text-muted">{{profile.desc}}</small>
         </div>
       </b-card>    
     </b-card-group>
@@ -28,7 +28,7 @@
           <b-badge variant="success">Selected</b-badge>
         </template>
         <div slot="footer">
-          <small class="text-muted">{{profile.uptodate}}</small>
+          <small class="text-muted">{{profile.desc}}</small>
         </div>
       </b-card>    
     </b-card-group>

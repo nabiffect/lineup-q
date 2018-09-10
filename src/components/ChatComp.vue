@@ -17,19 +17,24 @@
         </div>
     </div>
     <div>
-    	<b-container class="msgContainer">      	        	  
-        <b-form @submit.prevent="sendMessage">
-        	<b-row>
-        	<!-- <b-col>
-            <b-form-input id="ipUser" placeholder="User" v-model="user" class="form-control" required></b-form-input>
-          </b-col> -->
-          <b-col>
-            <b-form-input id="ipMsg" type="text" placeholder="Msg" v-model="message" class="form-control" ></b-form-input>
-          </b-col>
-          <b-col><b-button type="submit"class="btn">Send</b-button></b-col>
-          </b-row>
-        </b-form>
-      </b-container>
+      <template v-if="!isready">
+        <b-button class="btnReady" v-on:click="playerReady">Ready</b-button>
+      </template>
+      <template v-else>
+      	<b-container class="msgContainer">      	        	  
+          <b-form @submit.prevent="sendMessage">
+          	<b-row>
+          	<!-- <b-col>
+              <b-form-input id="ipUser" placeholder="User" v-model="user" class="form-control" required></b-form-input>
+            </b-col> -->
+            <b-col>
+              <b-form-input id="ipMsg" type="text" placeholder="Message..." v-model="message" class="form-control" ></b-form-input>
+            </b-col>
+            <b-col><b-button type="submit" class="btn">Send</b-button></b-col>
+            </b-row>
+          </b-form>
+        </b-container>
+      </template>
     </div>
     <!-- test -->
     <div>
@@ -46,16 +51,14 @@ import io from 'socket.io-client';
 export default {
   name: 'ChatComp',
 
+  props: ['isready'],
   data() {
     return {
   	  user: 'will',
   	  message: '',
   	  messages: [
-        {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-        {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-        {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-        {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
-        {user: 'tester', 'message': 'testtest This is totally testing for those who want to user.'},
+        {user: 'admin', 'message': 'The game will start once the parties on ready.'},
+        {user: 'admin', 'message': 'Please click the button called ready, it would be depositted on fund pool automatically.'}        
       ],
   	  socket: io('localhost:3000')      
     }
@@ -64,12 +67,26 @@ export default {
   mounted() {
   	this.socket.on('MESSAGE', (data) => {
   	  this.messages = [...this.messages, data];
-  	});
+  	});    
   },
 
   methods: {
     isMyMsg(username) {      
       return username == this.user;
+    },
+
+    playerReady() {
+      this.$emit("playerready");    
+      
+    },
+
+    testFunc() {
+      setTimeout(() => {
+        this.socket.emit('SEND_MESSAGE', {
+          user: 'tester',
+          message: 'hi this is will'
+        });
+      }, 1000);      
     },
 
   	sendMessage(e) {
@@ -113,9 +130,14 @@ export default {
   padding-top: 10px;
 }
 
+.btnReady {
+  width: 200px;
+  margin: 10px;
+}
+
 .messages {
   height: 400px;  
-  border: 1px solid black;
+  border: 3px solid #235a06;
   padding: 10px 20px 5px 10px;
   overflow-y: auto;  
 }

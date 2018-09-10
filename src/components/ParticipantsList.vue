@@ -63,6 +63,10 @@ export default {
 </script>
 
 <style scoped>
+  h2 {
+    font-size: 18px;
+  }
+
   .rootElem {
     margin-top: 30px;
   }

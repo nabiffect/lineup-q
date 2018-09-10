@@ -5,19 +5,28 @@
         <b-col cols="4" style="background: #f1f7f2">
           <img class="logo" :src="getLogo">
           <ProfileCard v-bind:userinfo="userinfo" />
-          <ParticipantsList />
+
+          <template v-if="isJoin">
+            <ParticipantsList />  
+          </template>          
         </b-col>
         <b-col cols="8">
           <template v-if="endTime">
-            <CountDown v-bind:end="endTime" />
+            <b-row>
+              <b-col><p class="txtStart">GAME START ></p></b-col>
+              <b-col>
+                <CountDown v-bind:end="endTime" />
+              </b-col>
+              <b-col></b-col>
+            </b-row>
           </template>
 
           <template v-if="!isFinished">
             <template v-if="!isJoin">
               <Rooms v-on:joinroom="onChangeChatRoom" />
             </template>
-            <template v-else>
-              <ChatComp v-on:showcmodal="_showChooseModal" v-on:showbmodal="_showBetModal" v-on:showfmodal="_showFinalModal" />  
+            <template v-else>                            
+              <ChatComp  v-bind:isready="isReady" v-on:playerready="_readyGame" v-on:showcmodal="_showChooseModal" v-on:showbmodal="_showBetModal" v-on:showfmodal="_showFinalModal" />
             </template>
           </template>
           <template v-else>
@@ -82,7 +91,8 @@ export default {
       isFinished: false,
       loading: false,
       confirmed: false,
-	    isJoin: true,
+	    isJoin: false,
+      isReady: false,
       selProfile: null,
       selBetProfile1: null,
       selBetProfile2: null,
@@ -129,15 +139,16 @@ export default {
 
   	onChangeChatRoom() {
       console.log("changeChatroom");
-      this.isJoin = true;
-
-      const date = new Date();
-      date.setMinutes(date.getMinutes() + 10);
-      console.log(date)
-      this.endTime = date.toString();
+      this.isJoin = true;      
       
-      this._depositFunds(this.userinfo.uname, this.userinfo.gender)
+      //this._startGame() 
     },
+
+    _readyGame() {
+      // this._depositFunds(this.userinfo.uname, this.userinfo.gender)
+      this.isReady = true;
+      this._startGame() 
+    },    
 
     _depositFunds: function(address, gender) {
       this.loading = true;
@@ -148,11 +159,19 @@ export default {
         .then(response => {
           console.log("result", response.data.result);
           this._getBalance();          
+          this._startGame();
         }).catch(error => {
           console.log(error)          
         }).finally(() => {
           this.loading = false;
         })
+    },
+
+    _startGame() {
+      const date = new Date();
+      date.setMinutes(date.getMinutes() + 10);
+      console.log(date)
+      this.endTime = date.toString();
     },
 
     _changeFinishPage() {
@@ -270,6 +289,10 @@ export default {
 </script>
 
 <style scoped>
+  .txtStart {
+    font-size: 20px;
+    font-weight: bold;
+  }
 
   .logo {
     text-align: left;
@@ -286,5 +309,5 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%; 
-  }
+  }  
 </style>
