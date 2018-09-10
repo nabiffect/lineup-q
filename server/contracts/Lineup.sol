@@ -59,14 +59,14 @@ contract Lineup is Ownable{
     roomId = numRooms;
 
     Room memory room;
-    room.fundingGoal = 600;
+    room.fundingGoal = 60000000000;
     rooms[roomId] = room;
     return roomId;
   } 
 
   function depositFunds(bytes32 name, bool isMale) payable public {
   	require(!rooms[roomId].depositClosed);
-    require(msg.value >= 300);
+    require(msg.value >= 30000000000);
  
     //register to userinfo
     UserType utype = UserType.MALE;
@@ -173,13 +173,13 @@ contract Lineup is Ownable{
     if(rooms[roomId].winners.length==0) revert();
 
     for(uint j=0; j<rooms[roomId].winners.length; j++) {
-      rooms[roomId].winners[i].transfer(150);
-      rooms[roomId].amountRaised-=150;
+      rooms[roomId].winners[i].transfer(15000000000);
+      rooms[roomId].amountRaised-=15000000000;
     }
 
     //should be changed
     if(rooms[roomId].winpanels.length>0){
-      uint amountForPanel = 300;
+      uint amountForPanel = 30000000000;
       uint dividents = amountForPanel.div(rooms[roomId].winpanels.length);
       for(uint i=0; i<rooms[roomId].winpanels.length; i++) {
         rooms[roomId].winpanels[i].transfer(dividents);
