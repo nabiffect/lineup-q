@@ -50,6 +50,8 @@
           const strBalance  = this.userinfo.balance.toString();
           const lidx = strBalance.length-8
           return strBalance.slice(0, lidx);
+        } else {
+          return 0
         }
       }
     },

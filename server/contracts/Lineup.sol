@@ -66,7 +66,7 @@ contract Lineup is Ownable{
 
   function depositFunds(bytes32 name, bool isMale) payable public {
   	require(!rooms[roomId].depositClosed);
-    require(msg.value >= 30000000000);
+    // require(msg.value >= 10000000000);
  
     //register to userinfo
     UserType utype = UserType.MALE;

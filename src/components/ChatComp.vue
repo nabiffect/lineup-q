@@ -37,11 +37,11 @@
       </template>
     </div>
     <!-- test -->
-    <div>
+    <!-- <div>
       <b-button @click="showChooseModal">Show Choose Partner</b-button>
       <b-button @click="showBetModal">Show Bet Partners</b-button>
       <b-button @click="showFinalModal">Show Final List</b-button>
-    </div>
+    </div> -->
 	</div>
 </template>
 
@@ -55,19 +55,19 @@ export default {
   data() {
     return {
   	  user: 'will',
-  	  message: '',
+  	  message: '',      
   	  messages: [
         {user: 'admin', 'message': 'The game will start once the parties on ready.'},
         {user: 'admin', 'message': 'Please click the button called ready, it would be depositted on fund pool automatically.'}        
       ],
-  	  socket: io('localhost:3000')      
+  	  socket: io('localhost:3000'),      
     }
   },
 
   mounted() {
   	this.socket.on('MESSAGE', (data) => {
   	  this.messages = [...this.messages, data];
-  	});    
+  	});        
   },
 
   methods: {
@@ -76,18 +76,8 @@ export default {
     },
 
     playerReady() {
-      this.$emit("playerready");    
-      
-    },
-
-    testFunc() {
-      setTimeout(() => {
-        this.socket.emit('SEND_MESSAGE', {
-          user: 'tester',
-          message: 'hi this is will'
-        });
-      }, 1000);      
-    },
+      this.$emit("playerready");                
+    },   
 
   	sendMessage(e) {
   	  e.preventDefault();
@@ -157,9 +147,8 @@ export default {
   text-align: left;
 }
 
-.message.outgoing .msgWrapper{  
-  float: right;
-  clear: both;
+.message.outgoing .msgWrapper{      
+  margin-left: 350px;  
   background: #05728f none repeat scroll 0 0;  
   color:#fff;
   padding: 5px 10px 5px 12px;

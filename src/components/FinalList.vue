@@ -9,7 +9,7 @@
         img-alt="Img"
         img-top>        
         <p class="card-text">
-          {{profile.cntFavorite}} 찜
+          {{profile.cntFavorite}} Likes
         </p>
         <template v-if="profile.name === matchName1">
           <b-badge variant="success">Matched</b-badge>
@@ -26,7 +26,7 @@
         img-alt="Img"
         img-top>        
         <p class="card-text">
-          {{profile.cntFavorite}} 찜
+          {{profile.cntFavorite}} Likes
         </p>
         <template v-if="profile.name === matchName2">
           <b-badge variant="success">Matched</b-badge>

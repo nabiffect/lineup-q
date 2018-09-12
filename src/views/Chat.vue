@@ -116,13 +116,7 @@ export default {
     this.$EventBus.$on('betPartner1', this._betPartner1);
     this.$EventBus.$on('betPartner2', this._betPartner2);
 
-    this._getBalance();
-
-    ///temp
-    // const date = new Date();
-    // date.setMinutes(date.getMinutes() + 10);
-    // console.log(date)
-    // this.endTime = date.toString();
+    this._getBalance();    
   },
 
   methods: {
@@ -139,15 +133,11 @@ export default {
 
   	onChangeChatRoom() {
       console.log("changeChatroom");
-      this.isJoin = true;      
-      
-      //this._startGame() 
+      this.isJoin = true;               
     },
 
-    _readyGame() {
-      // this._depositFunds(this.userinfo.uname, this.userinfo.gender)
-      this.isReady = true;
-      this._startGame() 
+    _readyGame() {            
+      this._depositFunds(this.userinfo.uname, this.userinfo.gender)          
     },    
 
     _depositFunds: function(address, gender) {
@@ -158,8 +148,9 @@ export default {
         .post('/lineup/depositFunds', qs.stringify({'uname': address, 'gender': gender, 'amount': 100}))
         .then(response => {
           console.log("result", response.data.result);
-          this._getBalance();          
-          this._startGame();
+          this._getBalance();  
+          this.isReady = true;        
+          this._startGame();                
         }).catch(error => {
           console.log(error)          
         }).finally(() => {
@@ -169,7 +160,7 @@ export default {
 
     _startGame() {
       const date = new Date();
-      date.setMinutes(date.getMinutes() + 10);
+      date.setMinutes(date.getMinutes() + 10);            
       console.log(date)
       this.endTime = date.toString();
     },
@@ -213,7 +204,7 @@ export default {
         .post('/lineup/likeAtPartner', qs.stringify({'address': address}))
         .then(response => {
           console.log("result", response.data.result);
-          this.confirmed = true;
+          this.confirmed = true;          
         })
         .catch(error => {
           console.log(error)          
@@ -233,7 +224,7 @@ export default {
     handleBetPartner() {
       console.log(this.selBetProfile1.name +"/"+this.selBetProfile2.name);
 
-      // _betMatch(this.selBetProfile1.address, this.selBetProfile2.address);
+      _betMatch(this.selBetProfile1.address, this.selBetProfile2.address);
     },
 
     _betMatch(fromAddr, toAddr) {
@@ -267,7 +258,7 @@ export default {
     },    
 
     handleFinalClose() {
-      // this._distribution()
+      this._distribution()          
     },
 
     _distribution: function() {     
@@ -275,6 +266,7 @@ export default {
         .post('/lineup/distribution')
         .then(response => {
           console.log("result", response.data.result)
+          this.confirmed = true;
           this._getBalance();          
         })
         .catch(error => {
